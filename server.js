@@ -7,7 +7,6 @@ const request = require('superagent');
 
 // Load env vars;
 require('dotenv').config();
-
 const PORT = process.env.PORT || 3000;
 
 // App
@@ -66,6 +65,35 @@ function Weather(weatherJson) {
   });
 }
 
+//Yelp
+app.get('/yelp', getBusiness)
+
+function Yelp(business) {
+  this.name = business.name;
+  this.image_url = business.image_url;
+  this.price = business.price;
+  this.rating = business.rating;
+  this.url = business.url;
+}
+
+function getBusiness (req, res) {
+  return searchForBusiness(request.query.data)
+  .then(businessData => {
+    res.send(businessData);
+  })
+}
+
+function searchForBusiness (query) {
+  const url = `https://api.yelp.com/v3/businesses/search?location=${query}`
+
+  superagent.get(url)
+  .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
+  .then(yelpData => {
+    const yelp = new Yelp(yelpData);
+    yelp.map()
+    return yelp;
+  })
+}
 // Bad path 
 app.get('/*', function(req, res) {
   res.status(404).send('You are in the wrong place');
