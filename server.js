@@ -110,14 +110,14 @@ function searchForWeather(query) {
 
 function searchYelp(query) {
   const url = `https://api.yelp.com/v3/businesses/search?term=restaurants&latitude=${query.latitude}&longitude=${query.longitude}`;
-  return superagent.get(url)  
+  return superagent.get(url)
     .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
     .then(yelpData => {
       return yelpData.body.businesses.map(business => new Yelp(business));
     });
 }
 
-// // Get weather data
+/// // Get weather data
 // app.get('/weather', (req, res) => {
 //   const weatherData = getWeather(req.query.data);
 //   if (!weatherData) {
